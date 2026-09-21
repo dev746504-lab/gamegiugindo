@@ -119,7 +119,11 @@ export default function SortingGame({ data, sorting }: SortingGameProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div
+        className={`grid gap-4 ${
+          data.trays.length >= 5 ? "grid-cols-5" : data.trays.length === 3 ? "grid-cols-3" : "grid-cols-4"
+        }`}
+      >
         {data.trays.map((tray) => (
           <div
             key={tray.id}
