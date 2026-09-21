@@ -46,7 +46,12 @@ export default function PresentPage() {
           {state.activeGame === "sorting" ? (
             <SortingGame data={lessonData.sortingGame} sorting={state.sorting} />
           ) : (
-            <TrueFalseGame data={lessonData.trueFalseGame} state={state.trueFalse} />
+            <TrueFalseGame
+              data={lessonData.trueFalseGame}
+              state={state.trueFalse}
+              onPick={actions.pickAnswer}
+              onReveal={actions.revealAnswer}
+            />
           )}
         </div>
       </div>

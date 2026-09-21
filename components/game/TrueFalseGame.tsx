@@ -22,9 +22,11 @@ export interface TrueFalseGameData {
 interface TrueFalseGameProps {
   data: TrueFalseGameData;
   state: TrueFalseState;
+  onPick: (pick: boolean) => void;
+  onReveal: () => void;
 }
 
-export default function TrueFalseGame({ data, state }: TrueFalseGameProps) {
+export default function TrueFalseGame({ data, state, onPick, onReveal }: TrueFalseGameProps) {
   const question = data.questions[state.currentIndex];
   const wasRevealed = useRef(false);
 
@@ -53,23 +55,41 @@ export default function TrueFalseGame({ data, state }: TrueFalseGameProps) {
         <p className="max-w-3xl text-4xl font-extrabold leading-snug text-slate-800">{question.text}</p>
 
         <div className="flex gap-8">
-          <div
-            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition ${
+          <button
+            type="button"
+            onClick={() => onPick(true)}
+            disabled={state.revealed}
+            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
               state.teacherPick === true
                 ? "scale-110 bg-emerald-500 text-white"
-                : "bg-emerald-100 text-emerald-600"
+                : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"
             }`}
           >
             ĐÚNG
-          </div>
-          <div
-            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition ${
-              state.teacherPick === false ? "scale-110 bg-rose-500 text-white" : "bg-rose-100 text-rose-600"
+          </button>
+          <button
+            type="button"
+            onClick={() => onPick(false)}
+            disabled={state.revealed}
+            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
+              state.teacherPick === false
+                ? "scale-110 bg-rose-500 text-white"
+                : "bg-rose-100 text-rose-600 hover:bg-rose-200"
             }`}
           >
             SAI
-          </div>
+          </button>
         </div>
+
+        {state.teacherPick !== null && !state.revealed && (
+          <button
+            type="button"
+            onClick={onReveal}
+            className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600"
+          >
+            Chốt đáp án
+          </button>
+        )}
 
         <AnimatePresence>
           {state.revealed && (
