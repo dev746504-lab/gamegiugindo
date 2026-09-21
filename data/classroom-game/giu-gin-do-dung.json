@@ -1,0 +1,77 @@
+{
+  "lessonTitle": "Kỹ năng giữ gìn đồ dùng học tập",
+  "grade": "Lớp 1",
+  "teams": ["Nhóm 1", "Nhóm 2", "Nhóm 3", "Nhóm 4"],
+  "sortingGame": {
+    "title": "Sắp xếp đồ dùng học tập",
+    "instruction": "Kéo từng đồ dùng vào đúng nơi cất giữ nhé!",
+    "timerSeconds": 120,
+    "trays": [
+      { "id": "tray-ke-sach", "label": "Kệ sách", "emoji": "📚" },
+      { "id": "tray-hop-but", "label": "Hộp bút", "emoji": "✏️" },
+      { "id": "tray-hop-mau", "label": "Hộp màu", "emoji": "🎨" },
+      { "id": "tray-bia-ho-so", "label": "Bìa hồ sơ", "emoji": "📁" }
+    ],
+    "items": [
+      { "id": "item-sach", "label": "Sách", "emoji": "📖", "correctTrayId": "tray-ke-sach" },
+      { "id": "item-but-thuoc", "label": "Bút thước", "emoji": "📏", "correctTrayId": "tray-hop-but" },
+      { "id": "item-but-mau", "label": "Bút màu", "emoji": "🖍️", "correctTrayId": "tray-hop-mau" },
+      { "id": "item-bai-kiem-tra", "label": "Bài kiểm tra", "emoji": "📝", "correctTrayId": "tray-bia-ho-so" }
+    ]
+  },
+  "trueFalseGame": {
+    "title": "Đúng hay Sai",
+    "instruction": "Cùng đoán xem hành động này là Đúng hay Sai nhé!",
+    "questions": [
+      {
+        "id": "q1",
+        "text": "Học sinh xé vở để gấp máy bay",
+        "emoji": "✈️",
+        "answer": false,
+        "explanation": "Xé vở làm hỏng sách vở của mình, đây là hành động không biết giữ gìn đồ dùng học tập."
+      },
+      {
+        "id": "q2",
+        "text": "Học sinh lau chùi cặp sách sạch sẽ",
+        "emoji": "🧽",
+        "answer": true,
+        "explanation": "Lau chùi cặp sách thường xuyên giúp đồ dùng luôn sạch đẹp và dùng được lâu hơn."
+      },
+      {
+        "id": "q3",
+        "text": "Học sinh vẽ bậy lên mặt bàn học",
+        "emoji": "🖊️",
+        "answer": false,
+        "explanation": "Vẽ bậy lên bàn học làm bàn học bị bẩn, đây là hành động không nên làm."
+      },
+      {
+        "id": "q4",
+        "text": "Học sinh cất sách vở vào đúng ngăn cặp sau khi học xong",
+        "emoji": "🎒",
+        "answer": true,
+        "explanation": "Cất đồ dùng đúng nơi quy định giúp không bị thất lạc và luôn gọn gàng."
+      },
+      {
+        "id": "q5",
+        "text": "Học sinh ném sách vở xuống sàn nhà",
+        "emoji": "📚",
+        "answer": false,
+        "explanation": "Ném sách vở xuống sàn có thể làm rách, bẩn sách vở, là hành động không giữ gìn đồ dùng."
+      },
+      {
+        "id": "q6",
+        "text": "Học sinh bọc bìa sách vở cẩn thận trước khi dùng",
+        "emoji": "📘",
+        "answer": true,
+        "explanation": "Bọc bìa giúp bảo vệ sách vở khỏi bị rách và giữ được lâu, đẹp."
+      },
+      {
+        "id": "q7",
+        "text": "Học sinh dùng bút màu vẽ lên tường lớp học",
+        "emoji": "🖍️",
+        "answer": false,
+        "explanation": "Vẽ lên tường làm bẩn lớp học và không đúng mục đích sử dụng bút màu."
+      }
+    ]
+  }
+}
