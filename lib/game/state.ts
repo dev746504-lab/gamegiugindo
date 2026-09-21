@@ -22,6 +22,7 @@ export interface TrueFalseState {
   currentIndex: number;
   teacherPick: boolean | null;
   revealed: boolean;
+  wrongAttempt: boolean;
 }
 
 export interface GameState {
@@ -52,6 +53,7 @@ export function createInitialState(teamNames: string[]): GameState {
       currentIndex: 0,
       teacherPick: null,
       revealed: false,
+      wrongAttempt: false,
     },
   };
 }

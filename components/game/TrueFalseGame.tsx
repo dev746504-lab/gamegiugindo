@@ -25,19 +25,34 @@ interface TrueFalseGameProps {
   activeTeamId: string | null;
   onPick: (pick: boolean) => void;
   onReveal: () => void;
+  onPassTurn: () => void;
 }
 
-export default function TrueFalseGame({ data, state, activeTeamId, onPick, onReveal }: TrueFalseGameProps) {
+export default function TrueFalseGame({
+  data,
+  state,
+  activeTeamId,
+  onPick,
+  onReveal,
+  onPassTurn,
+}: TrueFalseGameProps) {
   const question = data.questions[state.currentIndex];
   const wasRevealed = useRef(false);
+  const wasWrongAttempt = useRef(false);
 
   useEffect(() => {
     if (state.revealed && !wasRevealed.current) {
-      const isCorrect = state.teacherPick === question?.answer;
-      playSound(isCorrect ? "correct" : "wrong");
+      playSound("correct");
     }
     wasRevealed.current = state.revealed;
-  }, [state.revealed, state.teacherPick, question?.answer]);
+  }, [state.revealed]);
+
+  useEffect(() => {
+    if (state.wrongAttempt && !wasWrongAttempt.current) {
+      playSound("wrong");
+    }
+    wasWrongAttempt.current = state.wrongAttempt;
+  }, [state.wrongAttempt]);
 
   if (!question) return null;
 
@@ -55,47 +70,66 @@ export default function TrueFalseGame({ data, state, activeTeamId, onPick, onRev
         <span className="text-7xl">{question.emoji}</span>
         <p className="max-w-3xl text-4xl font-extrabold leading-snug text-slate-800">{question.text}</p>
 
-        {!activeTeamId && (
-          <div className="rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
-            👉 Hãy bấm chọn đội đang trả lời ở bảng điểm góc trên bên phải trước nhé!
-          </div>
-        )}
+        {state.wrongAttempt ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-4 rounded-3xl bg-rose-500 px-8 py-6 text-white shadow-xl"
+          >
+            <p className="text-3xl font-black">❌ Sai rồi! Mời đội khác trả lời câu này.</p>
+            <button
+              type="button"
+              onClick={onPassTurn}
+              className="rounded-2xl bg-white px-6 py-3 text-lg font-bold text-rose-600 shadow transition hover:bg-rose-50"
+            >
+              Chọn đội khác trả lời →
+            </button>
+          </motion.div>
+        ) : (
+          <>
+            {!activeTeamId && (
+              <div className="rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
+                👉 Hãy bấm chọn đội đang trả lời ở bảng điểm góc trên bên phải trước nhé!
+              </div>
+            )}
 
-        <div className={`flex gap-8 transition ${!activeTeamId ? "pointer-events-none opacity-50" : ""}`}>
-          <button
-            type="button"
-            onClick={() => onPick(true)}
-            disabled={state.revealed || !activeTeamId}
-            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
-              state.teacherPick === true
-                ? "scale-110 bg-emerald-500 text-white"
-                : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"
-            }`}
-          >
-            ĐÚNG
-          </button>
-          <button
-            type="button"
-            onClick={() => onPick(false)}
-            disabled={state.revealed || !activeTeamId}
-            className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
-              state.teacherPick === false
-                ? "scale-110 bg-rose-500 text-white"
-                : "bg-rose-100 text-rose-600 hover:bg-rose-200"
-            }`}
-          >
-            SAI
-          </button>
-        </div>
+            <div className={`flex gap-8 transition ${!activeTeamId ? "pointer-events-none opacity-50" : ""}`}>
+              <button
+                type="button"
+                onClick={() => onPick(true)}
+                disabled={state.revealed || !activeTeamId}
+                className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
+                  state.teacherPick === true
+                    ? "scale-110 bg-emerald-500 text-white"
+                    : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"
+                }`}
+              >
+                ĐÚNG
+              </button>
+              <button
+                type="button"
+                onClick={() => onPick(false)}
+                disabled={state.revealed || !activeTeamId}
+                className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
+                  state.teacherPick === false
+                    ? "scale-110 bg-rose-500 text-white"
+                    : "bg-rose-100 text-rose-600 hover:bg-rose-200"
+                }`}
+              >
+                SAI
+              </button>
+            </div>
 
-        {state.teacherPick !== null && !state.revealed && (
-          <button
-            type="button"
-            onClick={onReveal}
-            className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600"
-          >
-            Chốt đáp án
-          </button>
+            {state.teacherPick !== null && !state.revealed && (
+              <button
+                type="button"
+                onClick={onReveal}
+                className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600"
+              >
+                Chốt đáp án
+              </button>
+            )}
+          </>
         )}
 
         <AnimatePresence>
@@ -104,13 +138,9 @@ export default function TrueFalseGame({ data, state, activeTeamId, onPick, onRev
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className={`w-full max-w-2xl rounded-3xl p-6 text-white shadow-xl ${
-                question.answer ? "bg-emerald-500" : "bg-rose-500"
-              }`}
+              className="w-full max-w-2xl rounded-3xl bg-emerald-500 p-6 text-white shadow-xl"
             >
-              <p className="text-3xl font-black">
-                Đáp án đúng: {question.answer ? "ĐÚNG" : "SAI"}
-              </p>
+              <p className="text-3xl font-black">🎉 Chính xác! +1 điểm</p>
               <p className="mt-2 text-xl font-semibold">{question.explanation}</p>
             </motion.div>
           )}

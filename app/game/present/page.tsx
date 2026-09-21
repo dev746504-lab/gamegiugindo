@@ -61,6 +61,7 @@ export default function PresentPage() {
               activeTeamId={state.activeTeamId}
               onPick={actions.pickAnswer}
               onReveal={actions.revealAnswer}
+              onPassTurn={actions.passToNextTeam}
             />
           )}
         </div>
