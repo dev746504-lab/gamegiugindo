@@ -1,0 +1,45 @@
+{
+  "title": "Bao vở thần tốc",
+  "instruction": "Sắp xếp đúng thứ tự các bước bao vở và dán nhãn nhé!",
+  "timerSeconds": 45,
+  "steps": [
+    {
+      "id": "step-1",
+      "order": 1,
+      "text": "Chuẩn bị vở, bìa bao trong (nylon/giấy) và nhãn vở",
+      "icon": "📚"
+    },
+    {
+      "id": "step-2",
+      "order": 2,
+      "text": "Trải phẳng bìa bao lên bàn",
+      "icon": "📄"
+    },
+    {
+      "id": "step-3",
+      "order": 3,
+      "text": "Đặt quyển vở vào giữa bìa bao, gấp mép bìa theo đúng kích thước vở",
+      "icon": "📐"
+    },
+    {
+      "id": "step-4",
+      "order": 4,
+      "text": "Gấp và dán/miết chặt 4 góc bìa để cố định, không để phồng hay nhăn",
+      "icon": "✂️",
+      "note": "Không cần dán quá nhiều keo, chỉ cần đủ giữ chặt bìa"
+    },
+    {
+      "id": "step-5",
+      "order": 5,
+      "text": "Vuốt phẳng bìa bao, kiểm tra vở đã được bọc kín, gọn gàng",
+      "icon": "✅"
+    },
+    {
+      "id": "step-6",
+      "order": 6,
+      "text": "Dán nhãn vở lên góc trên bên phải mặt bìa, ghi/dán tên đầy đủ",
+      "icon": "🏷️",
+      "note": "Nhãn cần ghi rõ ràng, dán ngay ngắn không lệch"
+    }
+  ]
+}

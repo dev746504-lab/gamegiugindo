@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import lessonData from "@/data/classroom-game/giu-gin-do-dung.json";
+import baoVoData from "@/data/classroom-game/bao-vo-than-toc.json";
 import { useGameState } from "@/lib/game/state";
 import { createGameActions } from "@/lib/game/actions";
 import ScoreBoard from "@/components/game/ScoreBoard";
 import SortingGame from "@/components/game/SortingGame";
 import TrueFalseGame from "@/components/game/TrueFalseGame";
+import SequencingGame from "@/components/game/SequencingGame";
 import ControlPanel from "@/components/game/ControlPanel";
 
 export default function PresentPage() {
@@ -38,6 +40,15 @@ export default function PresentPage() {
             >
               Game 2: Đúng/Sai
             </button>
+            <button
+              type="button"
+              onClick={() => actions.setActiveGame("sequencing")}
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                state.activeGame === "sequencing" ? "bg-teal-500 text-white" : "text-slate-500"
+              }`}
+            >
+              Game 3: Bao vở
+            </button>
           </div>
           <ScoreBoard
             teams={state.teams}
@@ -48,13 +59,14 @@ export default function PresentPage() {
         </div>
 
         <div className="flex-1">
-          {state.activeGame === "sorting" ? (
+          {state.activeGame === "sorting" && (
             <SortingGame
               data={lessonData.sortingGame}
               sorting={state.sorting}
               activeTeamId={state.activeTeamId}
             />
-          ) : (
+          )}
+          {state.activeGame === "truefalse" && (
             <TrueFalseGame
               data={lessonData.trueFalseGame}
               state={state.trueFalse}
@@ -62,6 +74,13 @@ export default function PresentPage() {
               onPick={actions.pickAnswer}
               onReveal={actions.revealAnswer}
               onPassTurn={actions.passToNextTeam}
+            />
+          )}
+          {state.activeGame === "sequencing" && (
+            <SequencingGame
+              data={baoVoData}
+              sequencing={state.sequencing}
+              activeTeamId={state.activeTeamId}
             />
           )}
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { getSortingRemainingSeconds, type SortingState } from "@/lib/game/state";
+import { getRemainingSeconds, type SortingState } from "@/lib/game/state";
 import { playSound } from "@/lib/game/sound";
 
 export interface SortingTray {
@@ -37,7 +37,7 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [shakeId, setShakeId] = useState<string | null>(null);
-  const [remaining, setRemaining] = useState(() => getSortingRemainingSeconds(sorting));
+  const [remaining, setRemaining] = useState(() => getRemainingSeconds(sorting));
   const dragOrigin = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -47,9 +47,9 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
   }, [sorting.roundId]);
 
   useEffect(() => {
-    setRemaining(getSortingRemainingSeconds(sorting));
+    setRemaining(getRemainingSeconds(sorting));
     const interval = setInterval(() => {
-      setRemaining(getSortingRemainingSeconds(sorting));
+      setRemaining(getRemainingSeconds(sorting));
     }, 250);
     return () => clearInterval(interval);
   }, [sorting]);

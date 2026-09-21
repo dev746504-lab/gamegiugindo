@@ -1,5 +1,5 @@
 import lessonData from "@/data/classroom-game/giu-gin-do-dung.json";
-import { getSortingRemainingSeconds, type ActiveGame, type GameState } from "@/lib/game/state";
+import { getRemainingSeconds, type ActiveGame, type GameState } from "@/lib/game/state";
 
 type Updater = (updater: (prev: GameState) => GameState) => void;
 
@@ -40,7 +40,7 @@ export function createGameActions(update: Updater) {
           ...prev.sorting,
           isRunning: false,
           startedAt: null,
-          remainingSeconds: getSortingRemainingSeconds(prev.sorting),
+          remainingSeconds: getRemainingSeconds(prev.sorting),
         },
       }));
     },
@@ -113,6 +113,37 @@ export function createGameActions(update: Updater) {
         ...prev,
         activeTeamId: null,
         trueFalse: { ...prev.trueFalse, teacherPick: null, wrongAttempt: false },
+      }));
+    },
+
+    // Bumping roundId tells SequencingGame to reshuffle and clear any prior
+    // check result, same pattern as resetSorting.
+    startSequencingRound() {
+      update((prev) => ({
+        ...prev,
+        sequencing: {
+          ...prev.sequencing,
+          isRunning: true,
+          startedAt: Date.now(),
+          remainingSeconds: prev.sequencing.timerDuration,
+          roundId: prev.sequencing.roundId + 1,
+        },
+      }));
+    },
+
+    // Bumping checkSignal / showAnswerSignal tells SequencingGame to run that
+    // one-shot action, even if pressed twice in a row.
+    checkSequencing() {
+      update((prev) => ({
+        ...prev,
+        sequencing: { ...prev.sequencing, checkSignal: prev.sequencing.checkSignal + 1 },
+      }));
+    },
+
+    showSequencingAnswer() {
+      update((prev) => ({
+        ...prev,
+        sequencing: { ...prev.sequencing, showAnswerSignal: prev.sequencing.showAnswerSignal + 1 },
       }));
     },
   };

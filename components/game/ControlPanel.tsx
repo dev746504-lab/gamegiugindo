@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import lessonData from "@/data/classroom-game/giu-gin-do-dung.json";
-import { getSortingRemainingSeconds, type GameState } from "@/lib/game/state";
+import baoVoData from "@/data/classroom-game/bao-vo-than-toc.json";
+import { getRemainingSeconds, type GameState } from "@/lib/game/state";
 import type { GameActions } from "@/lib/game/actions";
 import ScoreBoard from "@/components/game/ScoreBoard";
 
@@ -12,18 +13,24 @@ interface ControlPanelProps {
 }
 
 export default function ControlPanel({ state, actions }: ControlPanelProps) {
-  const [remaining, setRemaining] = useState(() => getSortingRemainingSeconds(state.sorting));
+  const [sortingRemaining, setSortingRemaining] = useState(() => getRemainingSeconds(state.sorting));
+  const [sequencingRemaining, setSequencingRemaining] = useState(() => getRemainingSeconds(state.sequencing));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRemaining(getSortingRemainingSeconds(state.sorting));
+      setSortingRemaining(getRemainingSeconds(state.sorting));
+      setSequencingRemaining(getRemainingSeconds(state.sequencing));
     }, 250);
     return () => clearInterval(interval);
-  }, [state.sorting]);
+  }, [state.sorting, state.sequencing]);
 
-  const timeUp = remaining <= 0;
-  const minutes = Math.floor(remaining / 60).toString().padStart(2, "0");
-  const seconds = Math.floor(remaining % 60).toString().padStart(2, "0");
+  const sortingTimeUp = sortingRemaining <= 0;
+  const sortingMinutes = Math.floor(sortingRemaining / 60).toString().padStart(2, "0");
+  const sortingSeconds = Math.floor(sortingRemaining % 60).toString().padStart(2, "0");
+
+  const sequencingMinutes = Math.floor(sequencingRemaining / 60).toString().padStart(2, "0");
+  const sequencingSeconds = Math.floor(sequencingRemaining % 60).toString().padStart(2, "0");
+
   const currentQuestion = lessonData.trueFalseGame.questions[state.trueFalse.currentIndex];
 
   return (
@@ -47,20 +54,31 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
         >
           Game 2: Đúng/Sai
         </button>
+        <button
+          type="button"
+          onClick={() => actions.setActiveGame("sequencing")}
+          className={`flex-1 rounded-xl px-3 py-2 text-sm font-bold ${
+            state.activeGame === "sequencing" ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-600"
+          }`}
+        >
+          Game 3: Bao vở
+        </button>
       </div>
 
       <div className="space-y-3 rounded-2xl bg-slate-50 p-4">
-        {state.activeGame === "sorting" ? (
+        {state.activeGame === "sorting" && (
           <>
             <h3 className="text-sm font-bold text-slate-600">Sắp xếp đồ dùng học tập</h3>
-            <div className={`text-4xl font-black tabular-nums ${timeUp ? "text-rose-500" : "text-slate-800"}`}>
-              {minutes}:{seconds}
+            <div
+              className={`text-4xl font-black tabular-nums ${sortingTimeUp ? "text-rose-500" : "text-slate-800"}`}
+            >
+              {sortingMinutes}:{sortingSeconds}
             </div>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={actions.startTimer}
-                disabled={state.sorting.isRunning || timeUp}
+                disabled={state.sorting.isRunning || sortingTimeUp}
                 className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
               >
                 Bắt đầu
@@ -82,7 +100,9 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
               </button>
             </div>
           </>
-        ) : (
+        )}
+
+        {state.activeGame === "truefalse" && (
           <>
             <h3 className="text-sm font-bold text-slate-600">
               Câu {state.trueFalse.currentIndex + 1} / {lessonData.trueFalseGame.questions.length}
@@ -151,6 +171,42 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
             )}
             {!state.activeTeamId && !state.trueFalse.wrongAttempt && (
               <p className="text-xs font-bold text-amber-600">👉 Chọn đội đang trả lời ở Bảng điểm bên dưới trước.</p>
+            )}
+          </>
+        )}
+
+        {state.activeGame === "sequencing" && (
+          <>
+            <h3 className="text-sm font-bold text-slate-600">{baoVoData.title}</h3>
+            <div className="text-4xl font-black tabular-nums text-slate-800">
+              {sequencingMinutes}:{sequencingSeconds}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={actions.startSequencingRound}
+                className="rounded-xl bg-teal-500 px-4 py-2 text-sm font-bold text-white"
+              >
+                Bắt đầu vòng chơi
+              </button>
+              <button
+                type="button"
+                onClick={actions.checkSequencing}
+                disabled={!state.activeTeamId}
+                className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
+              >
+                Kiểm tra kết quả
+              </button>
+              <button
+                type="button"
+                onClick={actions.showSequencingAnswer}
+                className="rounded-xl bg-slate-500 px-4 py-2 text-sm font-bold text-white"
+              >
+                Xem đáp án đúng
+              </button>
+            </div>
+            {!state.activeTeamId && (
+              <p className="text-xs font-bold text-amber-600">👉 Chọn đội đang thi ở Bảng điểm bên dưới trước.</p>
             )}
           </>
         )}
