@@ -41,52 +41,52 @@
     "questions": [
       {
         "id": "q1",
-        "text": "Học sinh xé vở để gấp máy bay",
-        "emoji": "✈️",
+        "text": "Học sinh để sách vở ngoài trời mưa bị ướt",
+        "emoji": "🌧️",
         "answer": false,
-        "explanation": "Xé vở làm hỏng sách vở của mình, đây là hành động không biết giữ gìn đồ dùng học tập."
+        "explanation": "Sách vở bị ướt mưa sẽ nhăn nheo, hư hỏng, em nhớ cất sách vở vào cặp khi trời mưa nhé."
       },
       {
         "id": "q2",
-        "text": "Học sinh lau chùi cặp sách sạch sẽ",
-        "emoji": "🧽",
+        "text": "Học sinh dán nhãn tên lên cặp sách để không bị lẫn với bạn khác",
+        "emoji": "🏷️",
         "answer": true,
-        "explanation": "Lau chùi cặp sách thường xuyên giúp đồ dùng luôn sạch đẹp và dùng được lâu hơn."
+        "explanation": "Dán nhãn tên giúp em dễ nhận ra đồ dùng của mình, không bị nhầm lẫn hay thất lạc."
       },
       {
         "id": "q3",
-        "text": "Học sinh vẽ bậy lên mặt bàn học",
-        "emoji": "🖊️",
+        "text": "Học sinh giẫm chân lên quyển vở rơi dưới đất",
+        "emoji": "👟",
         "answer": false,
-        "explanation": "Vẽ bậy lên bàn học làm bàn học bị bẩn, đây là hành động không nên làm."
+        "explanation": "Giẫm lên sách vở làm bẩn và rách trang sách, đó là hành động không biết giữ gìn đồ dùng."
       },
       {
         "id": "q4",
-        "text": "Học sinh cất sách vở vào đúng ngăn cặp sau khi học xong",
-        "emoji": "🎒",
+        "text": "Học sinh cất bút màu về đúng hộp ngay sau khi vẽ xong",
+        "emoji": "🌈",
         "answer": true,
-        "explanation": "Cất đồ dùng đúng nơi quy định giúp không bị thất lạc và luôn gọn gàng."
+        "explanation": "Cất đồ dùng ngay sau khi dùng xong giúp không bị thất lạc và bàn học luôn gọn gàng."
       },
       {
         "id": "q5",
-        "text": "Học sinh ném sách vở xuống sàn nhà",
-        "emoji": "📚",
-        "answer": false,
-        "explanation": "Ném sách vở xuống sàn có thể làm rách, bẩn sách vở, là hành động không giữ gìn đồ dùng."
+        "text": "Học sinh dùng băng keo dán lại chiếc thước bị gãy thay vì vứt đi",
+        "emoji": "🔧",
+        "answer": true,
+        "explanation": "Sửa lại đồ dùng bị hỏng thay vì vứt bỏ là cách giữ gìn và tiết kiệm rất đáng khen."
       },
       {
         "id": "q6",
-        "text": "Học sinh bọc bìa sách vở cẩn thận trước khi dùng",
-        "emoji": "📘",
-        "answer": true,
-        "explanation": "Bọc bìa giúp bảo vệ sách vở khỏi bị rách và giữ được lâu, đẹp."
+        "text": "Học sinh mượn bút của bạn, làm rơi xuống đất mà không nhặt lên",
+        "emoji": "😢",
+        "answer": false,
+        "explanation": "Dù là đồ mượn của bạn, em cũng cần nhặt lên và giữ gìn cẩn thận như đồ của chính mình."
       },
       {
         "id": "q7",
-        "text": "Học sinh dùng bút màu vẽ lên tường lớp học",
-        "emoji": "🖍️",
+        "text": "Học sinh nhét bánh kẹo ăn dở vào chung ngăn cặp có sách vở",
+        "emoji": "🍪",
         "answer": false,
-        "explanation": "Vẽ lên tường làm bẩn lớp học và không đúng mục đích sử dụng bút màu."
+        "explanation": "Đồ ăn dính vào sách vở sẽ làm bẩn và dễ thu hút kiến, gián, nên cất đồ ăn ra khỏi ngăn sách vở."
       }
     ]
   }
