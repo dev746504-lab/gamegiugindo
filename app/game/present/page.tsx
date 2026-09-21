@@ -39,16 +39,26 @@ export default function PresentPage() {
               Game 2: Đúng/Sai
             </button>
           </div>
-          <ScoreBoard teams={state.teams} activeTeamId={state.activeTeamId} variant="present" />
+          <ScoreBoard
+            teams={state.teams}
+            activeTeamId={state.activeTeamId}
+            variant="present"
+            onSelectTeam={actions.selectTeam}
+          />
         </div>
 
         <div className="flex-1">
           {state.activeGame === "sorting" ? (
-            <SortingGame data={lessonData.sortingGame} sorting={state.sorting} />
+            <SortingGame
+              data={lessonData.sortingGame}
+              sorting={state.sorting}
+              activeTeamId={state.activeTeamId}
+            />
           ) : (
             <TrueFalseGame
               data={lessonData.trueFalseGame}
               state={state.trueFalse}
+              activeTeamId={state.activeTeamId}
               onPick={actions.pickAnswer}
               onReveal={actions.revealAnswer}
             />

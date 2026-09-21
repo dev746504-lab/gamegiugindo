@@ -29,9 +29,10 @@ export interface SortingGameData {
 interface SortingGameProps {
   data: SortingGameData;
   sorting: SortingState;
+  activeTeamId: string | null;
 }
 
-export default function SortingGame({ data, sorting }: SortingGameProps) {
+export default function SortingGame({ data, sorting, activeTeamId }: SortingGameProps) {
   const [placedByTray, setPlacedByTray] = useState<Record<string, string[]>>({});
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -61,7 +62,7 @@ export default function SortingGame({ data, sorting }: SortingGameProps) {
   const seconds = Math.floor(remaining % 60).toString().padStart(2, "0");
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>, itemId: string) {
-    if (timeUp) return;
+    if (timeUp || !activeTeamId) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragOrigin.current = { x: event.clientX, y: event.clientY };
     setDragId(itemId);
@@ -119,10 +120,16 @@ export default function SortingGame({ data, sorting }: SortingGameProps) {
         </div>
       </div>
 
+      {!activeTeamId && (
+        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
+          👉 Hãy bấm chọn đội đang chơi ở bảng điểm góc trên bên phải trước khi kéo-thả nhé!
+        </div>
+      )}
+
       <div
-        className={`grid gap-4 ${
+        className={`grid gap-4 transition ${
           data.trays.length >= 5 ? "grid-cols-5" : data.trays.length === 3 ? "grid-cols-3" : "grid-cols-4"
-        }`}
+        } ${!activeTeamId ? "pointer-events-none opacity-50" : ""}`}
       >
         {data.trays.map((tray) => (
           <div
@@ -147,7 +154,11 @@ export default function SortingGame({ data, sorting }: SortingGameProps) {
         ))}
       </div>
 
-      <div className="mt-auto flex min-h-[160px] flex-wrap items-center justify-center gap-6 rounded-3xl bg-white/70 p-6">
+      <div
+        className={`mt-auto flex min-h-[160px] flex-wrap items-center justify-center gap-6 rounded-3xl bg-white/70 p-6 transition ${
+          !activeTeamId ? "pointer-events-none opacity-50" : ""
+        }`}
+      >
         <AnimatePresence>
           {pendingItems.map((item) => (
             <motion.div

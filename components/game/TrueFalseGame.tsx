@@ -22,11 +22,12 @@ export interface TrueFalseGameData {
 interface TrueFalseGameProps {
   data: TrueFalseGameData;
   state: TrueFalseState;
+  activeTeamId: string | null;
   onPick: (pick: boolean) => void;
   onReveal: () => void;
 }
 
-export default function TrueFalseGame({ data, state, onPick, onReveal }: TrueFalseGameProps) {
+export default function TrueFalseGame({ data, state, activeTeamId, onPick, onReveal }: TrueFalseGameProps) {
   const question = data.questions[state.currentIndex];
   const wasRevealed = useRef(false);
 
@@ -54,11 +55,17 @@ export default function TrueFalseGame({ data, state, onPick, onReveal }: TrueFal
         <span className="text-7xl">{question.emoji}</span>
         <p className="max-w-3xl text-4xl font-extrabold leading-snug text-slate-800">{question.text}</p>
 
-        <div className="flex gap-8">
+        {!activeTeamId && (
+          <div className="rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
+            👉 Hãy bấm chọn đội đang trả lời ở bảng điểm góc trên bên phải trước nhé!
+          </div>
+        )}
+
+        <div className={`flex gap-8 transition ${!activeTeamId ? "pointer-events-none opacity-50" : ""}`}>
           <button
             type="button"
             onClick={() => onPick(true)}
-            disabled={state.revealed}
+            disabled={state.revealed || !activeTeamId}
             className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
               state.teacherPick === true
                 ? "scale-110 bg-emerald-500 text-white"
@@ -70,7 +77,7 @@ export default function TrueFalseGame({ data, state, onPick, onReveal }: TrueFal
           <button
             type="button"
             onClick={() => onPick(false)}
-            disabled={state.revealed}
+            disabled={state.revealed || !activeTeamId}
             className={`flex h-32 w-56 items-center justify-center rounded-3xl text-4xl font-black shadow-lg transition disabled:cursor-not-allowed ${
               state.teacherPick === false
                 ? "scale-110 bg-rose-500 text-white"
