@@ -19,7 +19,7 @@ export default function PresentPage() {
   const [showControl, setShowControl] = useState(false);
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden overflow-y-auto bg-gradient-to-br from-sky-200 via-amber-100 to-emerald-200 p-10 pb-24">
+    <main className="relative min-h-screen overflow-x-hidden overflow-y-auto bg-gradient-to-br from-sky-200 via-amber-100 to-emerald-200 p-10 pb-32">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex gap-2 rounded-2xl bg-white/80 p-1.5 shadow">

@@ -262,7 +262,7 @@ export default function SequencingGame({
       )}
 
       <div
-        className={`grid flex-1 grid-cols-3 gap-3 transition ${
+        className={`grid flex-1 grid-cols-3 gap-2 transition ${
           !activeTeamId ? "pointer-events-none opacity-50" : ""
         }`}
       >
@@ -301,10 +301,10 @@ export default function SequencingGame({
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="flex w-full flex-col items-center gap-1"
                 >
-                  <div className="h-20 w-20">
+                  <div className="h-14 w-14">
                     <StepIllustration stepId={step.id} />
                   </div>
-                  <span className="text-base font-bold text-slate-600">{step.short}</span>
+                  <span className="text-sm font-bold text-slate-600">{step.short}</span>
                   {isHinted && !isLocked && (
                     <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
                       → Vị trí {step.order}
