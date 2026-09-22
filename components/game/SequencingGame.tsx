@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getRemainingSeconds, type SequencingState } from "@/lib/game/state";
 import { playSound } from "@/lib/game/sound";
+import { StepIllustration } from "@/components/game/BaoVoIllustrations";
 
 export interface SequencingStep {
   id: string;
@@ -280,7 +281,8 @@ export default function SequencingGame({
                 type="button"
                 onClick={() => handleCardClick(step.id)}
                 disabled={timeUp || isLocked}
-                className={`relative flex h-full w-full flex-col items-center gap-2 rounded-3xl border-4 p-4 text-center shadow-xl transition disabled:cursor-not-allowed ${
+                title={step.text}
+                className={`relative flex h-full w-full flex-col items-center justify-center gap-2 rounded-3xl border-4 p-3 text-center shadow-xl transition disabled:cursor-not-allowed ${
                   isLocked
                     ? "border-emerald-500 bg-emerald-50"
                     : flaggedWrong
@@ -296,10 +298,11 @@ export default function SequencingGame({
                 <motion.div
                   animate={flaggedWrong ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="flex flex-col items-center gap-2"
+                  className="flex w-full flex-col items-center gap-2"
                 >
-                  <span className="text-5xl">{step.icon}</span>
-                  <span className="text-base font-bold leading-snug text-slate-700">{step.text}</span>
+                  <div className="h-28 w-28">
+                    <StepIllustration stepId={step.id} />
+                  </div>
                   {isHinted && !isLocked && (
                     <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
                       → Vị trí {step.order}
@@ -360,7 +363,9 @@ export default function SequencingGame({
                         <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-sm font-black text-white">
                           {step.order}
                         </span>
-                        <span className="text-3xl">{step.icon}</span>
+                        <div className="h-14 w-14 flex-shrink-0">
+                          <StepIllustration stepId={step.id} />
+                        </div>
                         <div>
                           <p className="font-bold text-slate-800">{step.text}</p>
                           {step.note && <p className="text-sm font-semibold text-emerald-600">💡 {step.note}</p>}
