@@ -11,6 +11,7 @@ import SortingGame from "@/components/game/SortingGame";
 import TrueFalseGame from "@/components/game/TrueFalseGame";
 import SequencingGame from "@/components/game/SequencingGame";
 import ControlPanel from "@/components/game/ControlPanel";
+import HelpButton from "@/components/game/HelpButton";
 
 export default function PresentPage() {
   const { state, update } = useGameState(lessonData.teams);
@@ -21,34 +22,37 @@ export default function PresentPage() {
     <main className="relative min-h-screen overflow-x-hidden overflow-y-auto bg-gradient-to-br from-sky-200 via-amber-100 to-emerald-200 p-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl flex-col gap-4">
         <div className="flex items-center justify-between">
-          <div className="flex gap-2 rounded-2xl bg-white/80 p-1.5 shadow">
-            <button
-              type="button"
-              onClick={() => actions.setActiveGame("sorting")}
-              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-                state.activeGame === "sorting" ? "bg-sky-500 text-white" : "text-slate-500"
-              }`}
-            >
-              Game 1: Sắp xếp
-            </button>
-            <button
-              type="button"
-              onClick={() => actions.setActiveGame("truefalse")}
-              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-                state.activeGame === "truefalse" ? "bg-fuchsia-500 text-white" : "text-slate-500"
-              }`}
-            >
-              Game 2: Đúng/Sai
-            </button>
-            <button
-              type="button"
-              onClick={() => actions.setActiveGame("sequencing")}
-              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
-                state.activeGame === "sequencing" ? "bg-teal-500 text-white" : "text-slate-500"
-              }`}
-            >
-              Game 3: Bao vở
-            </button>
+          <div className="flex items-center gap-3">
+            <div className="flex gap-2 rounded-2xl bg-white/80 p-1.5 shadow">
+              <button
+                type="button"
+                onClick={() => actions.setActiveGame("sorting")}
+                className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                  state.activeGame === "sorting" ? "bg-sky-500 text-white" : "text-slate-500"
+                }`}
+              >
+                Game 1: Sắp xếp
+              </button>
+              <button
+                type="button"
+                onClick={() => actions.setActiveGame("truefalse")}
+                className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                  state.activeGame === "truefalse" ? "bg-fuchsia-500 text-white" : "text-slate-500"
+                }`}
+              >
+                Game 2: Đúng/Sai
+              </button>
+              <button
+                type="button"
+                onClick={() => actions.setActiveGame("sequencing")}
+                className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+                  state.activeGame === "sequencing" ? "bg-teal-500 text-white" : "text-slate-500"
+                }`}
+              >
+                Game 3: Bao vở
+              </button>
+            </div>
+            <HelpButton activeGame={state.activeGame} />
           </div>
           <ScoreBoard
             teams={state.teams}
