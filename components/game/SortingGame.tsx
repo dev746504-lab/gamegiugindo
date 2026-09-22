@@ -32,20 +32,48 @@ interface SortingGameProps {
   activeTeamId: string | null;
 }
 
+function shuffleItems<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export default function SortingGame({ data, sorting, activeTeamId }: SortingGameProps) {
   const [placedByTray, setPlacedByTray] = useState<Record<string, string[]>>({});
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [shakeId, setShakeId] = useState<string | null>(null);
   const [hintedItemIds, setHintedItemIds] = useState<Set<string>>(new Set());
+  // Starts unshuffled (deterministic) so server-render and client-hydration
+  // agree — Math.random() inside a useState initializer would make them
+  // produce different orders and trigger a hydration mismatch.
+  const [shuffledItems, setShuffledItems] = useState<SortingItem[]>(data.items);
   const [remaining, setRemaining] = useState(() => getRemainingSeconds(sorting));
   const dragOrigin = useRef({ x: 0, y: 0 });
+  const isFirstRoundRef = useRef(true);
 
+  // Client-only: shuffle right after mount, once hydration is safely done.
   useEffect(() => {
+    setShuffledItems(shuffleItems(data.items));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // New round: reset placements and reshuffle (skip on first mount, the
+  // effect above already shuffled once).
+  useEffect(() => {
+    if (isFirstRoundRef.current) {
+      isFirstRoundRef.current = false;
+      return;
+    }
     setPlacedByTray({});
     setDragId(null);
     setShakeId(null);
     setHintedItemIds(new Set());
+    setShuffledItems(shuffleItems(data.items));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting.roundId]);
 
   useEffect(() => {
@@ -57,7 +85,7 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
   }, [sorting]);
 
   const placedItemIds = new Set(Object.values(placedByTray).flat());
-  const pendingItems = data.items.filter((item) => !placedItemIds.has(item.id));
+  const pendingItems = shuffledItems.filter((item) => !placedItemIds.has(item.id));
   const trayById = new Map(data.trays.map((tray) => [tray.id, tray]));
   const hintedTrayIds = new Set(
     pendingItems.filter((item) => hintedItemIds.has(item.id)).map((item) => item.correctTrayId)
