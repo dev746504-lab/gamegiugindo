@@ -55,6 +55,7 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
   const [order, setOrder] = useState<SequencingStep[]>(() => shuffleSteps(data.steps));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [checkResult, setCheckResult] = useState<Record<string, boolean> | null>(null);
+  const [hintedStepIds, setHintedStepIds] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
   const [remaining, setRemaining] = useState(() => getRemainingSeconds(sequencing));
@@ -78,6 +79,7 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
     setCheckResult(null);
     setShowAnswer(false);
     setRevealCount(0);
+    setHintedStepIds(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequencing.roundId]);
 
@@ -160,6 +162,18 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
     setCheckResult(null);
   }
 
+  function toggleHint(stepId: string) {
+    setHintedStepIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(stepId)) {
+        next.delete(stepId);
+      } else {
+        next.add(stepId);
+      }
+      return next;
+    });
+  }
+
   function handleCloseAnswer() {
     clearInterval(timersRef.current.interval);
     clearTimeout(timersRef.current.timeout);
@@ -209,8 +223,14 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
         {order.map((step, index) => {
           const isSelected = selectedId === step.id;
           const result = checkResult?.[step.id];
+          const isHinted = hintedStepIds.has(step.id);
           return (
-            <motion.div key={step.id} layout transition={{ type: "spring", stiffness: 300, damping: 28 }}>
+            <motion.div
+              key={step.id}
+              layout
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              className="relative"
+            >
               <button
                 type="button"
                 onClick={() => handleCardClick(step.id)}
@@ -235,7 +255,26 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
                 >
                   <span className="text-5xl">{step.icon}</span>
                   <span className="text-base font-bold leading-snug text-slate-700">{step.text}</span>
+                  {isHinted && (
+                    <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
+                      → Vị trí {step.order}
+                    </span>
+                  )}
                 </motion.div>
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  toggleHint(step.id);
+                }}
+                className={`absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full text-lg shadow transition ${
+                  isHinted ? "bg-amber-400 text-white" : "bg-amber-100 text-amber-600 hover:bg-amber-200"
+                }`}
+                aria-label={`Gợi ý cho bước "${step.text}"`}
+                title="Xem gợi ý"
+              >
+                💡
               </button>
             </motion.div>
           );
