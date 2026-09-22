@@ -81,6 +81,7 @@ export default function PresentPage() {
               data={baoVoData}
               sequencing={state.sequencing}
               activeTeamId={state.activeTeamId}
+              onCheck={actions.checkSequencing}
             />
           )}
         </div>

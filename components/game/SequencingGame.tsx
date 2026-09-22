@@ -24,6 +24,7 @@ interface SequencingGameProps {
   data: SequencingGameData;
   sequencing: SequencingState;
   activeTeamId: string | null;
+  onCheck: () => void;
 }
 
 /** Fisher-Yates shuffle, retried until at most 1 originally-adjacent pair
@@ -51,7 +52,7 @@ function shuffleSteps(steps: SequencingStep[]): SequencingStep[] {
   return fallback;
 }
 
-export default function SequencingGame({ data, sequencing, activeTeamId }: SequencingGameProps) {
+export default function SequencingGame({ data, sequencing, activeTeamId, onCheck }: SequencingGameProps) {
   const [order, setOrder] = useState<SequencingStep[]>(() => shuffleSteps(data.steps));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [checkResult, setCheckResult] = useState<Record<string, boolean> | null>(null);
@@ -202,16 +203,26 @@ export default function SequencingGame({ data, sequencing, activeTeamId }: Seque
         </div>
       )}
 
-      {checkResult && (
-        <div className="flex items-center justify-center">
-          <div
-            className={`rounded-2xl px-8 py-3 text-3xl font-black shadow-lg ${
-              correctCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
-            }`}
+      {activeTeamId && (
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={onCheck}
+            disabled={timeUp}
+            className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {correctCount === order.length ? "🎉 " : ""}
-            {correctCount}/{order.length} bước đúng!
-          </div>
+            🔍 Kiểm tra đáp án
+          </button>
+          {checkResult && (
+            <div
+              className={`rounded-2xl px-8 py-3 text-3xl font-black shadow-lg ${
+                correctCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
+              }`}
+            >
+              {correctCount === order.length ? "🎉 " : ""}
+              {correctCount}/{order.length} bước đúng!
+            </div>
+          )}
         </div>
       )}
 
