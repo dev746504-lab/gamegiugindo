@@ -70,8 +70,8 @@ export function createInitialState(teamNames: string[]): GameState {
       wrongAttempt: false,
     },
     sequencing: {
-      timerDuration: 45,
-      remainingSeconds: 45,
+      timerDuration: 120,
+      remainingSeconds: 120,
       startedAt: null,
       isRunning: false,
       roundId: 0,

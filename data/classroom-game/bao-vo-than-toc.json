@@ -1,7 +1,7 @@
 {
   "title": "Bao vở thần tốc",
   "instruction": "Sắp xếp đúng thứ tự các bước bao vở và dán nhãn nhé!",
-  "timerSeconds": 45,
+  "timerSeconds": 120,
   "steps": [
     {
       "id": "step-1",
