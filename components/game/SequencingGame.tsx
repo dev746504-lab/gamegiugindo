@@ -25,7 +25,7 @@ interface SequencingGameProps {
   sequencing: SequencingState;
   activeTeamId: string | null;
   onCheck: () => void;
-  onAllCorrect: () => void;
+  onCorrectPlacement: () => void;
 }
 
 /** Fisher-Yates shuffle, retried until at most 1 originally-adjacent pair
@@ -58,12 +58,16 @@ export default function SequencingGame({
   sequencing,
   activeTeamId,
   onCheck,
-  onAllCorrect,
+  onCorrectPlacement,
 }: SequencingGameProps) {
   const [order, setOrder] = useState<SequencingStep[]>(() => shuffleSteps(data.steps));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [checkResult, setCheckResult] = useState<Record<string, boolean> | null>(null);
   const [hintedStepIds, setHintedStepIds] = useState<Set<string>>(new Set());
+  // A step's id lands here the instant it's swapped into its correct spot —
+  // it locks in place (no longer swappable) and its point was already
+  // awarded right then, instead of waiting for "Kiểm tra đáp án".
+  const [lockedIds, setLockedIds] = useState<Set<string>>(new Set());
   const [showAnswer, setShowAnswer] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
   const [remaining, setRemaining] = useState(() => getRemainingSeconds(sequencing));
@@ -71,7 +75,6 @@ export default function SequencingGame({
   const isFirstRoundRef = useRef(true);
   const lastCheckSignalRef = useRef(sequencing.checkSignal);
   const lastShowAnswerSignalRef = useRef(sequencing.showAnswerSignal);
-  const awardedThisRoundRef = useRef(false);
   const timersRef = useRef<{ interval?: ReturnType<typeof setInterval>; timeout?: ReturnType<typeof setTimeout> }>(
     {}
   );
@@ -89,7 +92,7 @@ export default function SequencingGame({
     setShowAnswer(false);
     setRevealCount(0);
     setHintedStepIds(new Set());
-    awardedThisRoundRef.current = false;
+    setLockedIds(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequencing.roundId]);
 
@@ -101,23 +104,38 @@ export default function SequencingGame({
     return () => clearInterval(interval);
   }, [sequencing]);
 
-  // "Kiểm tra kết quả": snapshot correctness for the current arrangement.
+  // Whenever the arrangement changes for any reason (a swap, or a fresh
+  // shuffle at the start of a round), lock + score any card that's now in
+  // its correct spot and wasn't already locked. Checking the whole array
+  // here (not just the two just-swapped cards) also catches a card that
+  // happens to land in its correct spot purely from the shuffle.
+  useEffect(() => {
+    const newlyCorrect = order.filter((step, index) => step.order === index + 1 && !lockedIds.has(step.id));
+    if (newlyCorrect.length === 0) return;
+
+    setLockedIds((prev) => {
+      const next = new Set(prev);
+      newlyCorrect.forEach((step) => next.add(step.id));
+      return next;
+    });
+    playSound("correct");
+    newlyCorrect.forEach(() => onCorrectPlacement());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order]);
+
+  // "Kiểm tra đáp án": correct cards already locked + scored themselves the
+  // instant they were placed, so this just re-flashes whichever cards are
+  // still unlocked (i.e. still wrong) as a nudge — it doesn't award points.
   useEffect(() => {
     if (sequencing.checkSignal === lastCheckSignalRef.current) return;
     lastCheckSignalRef.current = sequencing.checkSignal;
 
     const result: Record<string, boolean> = {};
-    order.forEach((step, index) => {
-      result[step.id] = step.order === index + 1;
+    order.forEach((step) => {
+      result[step.id] = lockedIds.has(step.id);
     });
     setCheckResult(result);
-    const correctCount = Object.values(result).filter(Boolean).length;
-    const allCorrect = correctCount === order.length;
-    playSound(allCorrect ? "correct" : "wrong");
-    if (allCorrect && !awardedThisRoundRef.current) {
-      awardedThisRoundRef.current = true;
-      onAllCorrect();
-    }
+    playSound(lockedIds.size === order.length ? "correct" : "wrong");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequencing.checkSignal]);
 
@@ -153,11 +171,11 @@ export default function SequencingGame({
   const timeUp = remaining <= 0;
   const minutes = Math.floor(remaining / 60).toString().padStart(2, "0");
   const seconds = Math.floor(remaining % 60).toString().padStart(2, "0");
-  const correctCount = checkResult ? Object.values(checkResult).filter(Boolean).length : 0;
+  const lockedCount = lockedIds.size;
   const sortedSteps = [...data.steps].sort((a, b) => a.order - b.order);
 
   function handleCardClick(stepId: string) {
-    if (timeUp || !activeTeamId) return;
+    if (timeUp || !activeTeamId || lockedIds.has(stepId)) return;
     if (selectedId === null) {
       setSelectedId(stepId);
       return;
@@ -166,6 +184,9 @@ export default function SequencingGame({
       setSelectedId(null);
       return;
     }
+
+    // Locking + scoring newly-correct cards is handled by the effect above,
+    // which reacts to any change in `order` — this just performs the swap.
     setOrder((prev) => {
       const next = [...prev];
       const i = next.findIndex((step) => step.id === selectedId);
@@ -222,21 +243,19 @@ export default function SequencingGame({
           <button
             type="button"
             onClick={onCheck}
-            disabled={timeUp}
+            disabled={timeUp || lockedCount === order.length}
             className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
             🔍 Kiểm tra đáp án
           </button>
-          {checkResult && (
-            <div
-              className={`rounded-2xl px-8 py-3 text-3xl font-black shadow-lg ${
-                correctCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              {correctCount === order.length ? "🎉 " : ""}
-              {correctCount}/{order.length} bước đúng!
-            </div>
-          )}
+          <div
+            className={`rounded-2xl px-8 py-3 text-3xl font-black shadow-lg transition ${
+              lockedCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
+            }`}
+          >
+            {lockedCount === order.length ? "🎉 " : ""}
+            {lockedCount}/{order.length} bước đúng!
+          </div>
         </div>
       )}
 
@@ -247,7 +266,8 @@ export default function SequencingGame({
       >
         {order.map((step, index) => {
           const isSelected = selectedId === step.id;
-          const result = checkResult?.[step.id];
+          const isLocked = lockedIds.has(step.id);
+          const flaggedWrong = !isLocked && checkResult?.[step.id] === false;
           const isHinted = hintedStepIds.has(step.id);
           return (
             <motion.div
@@ -259,11 +279,11 @@ export default function SequencingGame({
               <button
                 type="button"
                 onClick={() => handleCardClick(step.id)}
-                disabled={timeUp}
+                disabled={timeUp || isLocked}
                 className={`relative flex h-full w-full flex-col items-center gap-2 rounded-3xl border-4 p-4 text-center shadow-xl transition disabled:cursor-not-allowed ${
-                  result === true
+                  isLocked
                     ? "border-emerald-500 bg-emerald-50"
-                    : result === false
+                    : flaggedWrong
                       ? "border-rose-500 bg-rose-50"
                       : isSelected
                         ? "scale-105 border-indigo-500 bg-indigo-50"
@@ -271,36 +291,38 @@ export default function SequencingGame({
                 }`}
               >
                 <span className="absolute -left-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-lg font-black text-white shadow">
-                  {index + 1}
+                  {isLocked ? "✅" : index + 1}
                 </span>
                 <motion.div
-                  animate={result === false ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }}
+                  animate={flaggedWrong ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="flex flex-col items-center gap-2"
                 >
                   <span className="text-5xl">{step.icon}</span>
                   <span className="text-base font-bold leading-snug text-slate-700">{step.text}</span>
-                  {isHinted && (
+                  {isHinted && !isLocked && (
                     <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
                       → Vị trí {step.order}
                     </span>
                   )}
                 </motion.div>
               </button>
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  toggleHint(step.id);
-                }}
-                className={`absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full text-lg shadow transition ${
-                  isHinted ? "bg-amber-400 text-white" : "bg-amber-100 text-amber-600 hover:bg-amber-200"
-                }`}
-                aria-label={`Gợi ý cho bước "${step.text}"`}
-                title="Xem gợi ý"
-              >
-                💡
-              </button>
+              {!isLocked && (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    toggleHint(step.id);
+                  }}
+                  className={`absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full text-lg shadow transition ${
+                    isHinted ? "bg-amber-400 text-white" : "bg-amber-100 text-amber-600 hover:bg-amber-200"
+                  }`}
+                  aria-label={`Gợi ý cho bước "${step.text}"`}
+                  title="Xem gợi ý"
+                >
+                  💡
+                </button>
+              )}
             </motion.div>
           );
         })}

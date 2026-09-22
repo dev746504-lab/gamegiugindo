@@ -83,7 +83,7 @@ export default function PresentPage() {
               sequencing={state.sequencing}
               activeTeamId={state.activeTeamId}
               onCheck={actions.checkSequencing}
-              onAllCorrect={actions.awardPoint}
+              onCorrectPlacement={actions.awardPoint}
             />
           )}
         </div>
