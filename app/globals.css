@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Toàn bộ cỡ chữ Tailwind (text-sm, text-lg, text-xl...) đều tính theo rem,
+   nên phóng to font-size gốc ở đây làm chữ to lên đồng loạt trên cả trang. */
+html {
+  font-size: 125%;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
