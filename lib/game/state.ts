@@ -57,8 +57,8 @@ export function createInitialState(teamNames: string[]): GameState {
       score: 0,
     })),
     sorting: {
-      timerDuration: 120,
-      remainingSeconds: 120,
+      timerDuration: 600,
+      remainingSeconds: 600,
       startedAt: null,
       isRunning: false,
       roundId: 0,
