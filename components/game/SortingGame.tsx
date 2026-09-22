@@ -37,6 +37,7 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [shakeId, setShakeId] = useState<string | null>(null);
+  const [hintedItemIds, setHintedItemIds] = useState<Set<string>>(new Set());
   const [remaining, setRemaining] = useState(() => getRemainingSeconds(sorting));
   const dragOrigin = useRef({ x: 0, y: 0 });
 
@@ -44,6 +45,7 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
     setPlacedByTray({});
     setDragId(null);
     setShakeId(null);
+    setHintedItemIds(new Set());
   }, [sorting.roundId]);
 
   useEffect(() => {
@@ -56,6 +58,22 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
 
   const placedItemIds = new Set(Object.values(placedByTray).flat());
   const pendingItems = data.items.filter((item) => !placedItemIds.has(item.id));
+  const trayById = new Map(data.trays.map((tray) => [tray.id, tray]));
+  const hintedTrayIds = new Set(
+    pendingItems.filter((item) => hintedItemIds.has(item.id)).map((item) => item.correctTrayId)
+  );
+
+  function toggleHint(itemId: string) {
+    setHintedItemIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  }
 
   const timeUp = remaining <= 0;
   const minutes = Math.floor(remaining / 60).toString().padStart(2, "0");
@@ -135,7 +153,11 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
           <div
             key={tray.id}
             data-tray-id={tray.id}
-            className="flex min-h-[160px] flex-col items-center gap-2 rounded-3xl border-4 border-dashed border-sky-300 bg-sky-50 p-3"
+            className={`flex min-h-[160px] flex-col items-center gap-2 rounded-3xl border-4 border-dashed p-3 transition ${
+              hintedTrayIds.has(tray.id)
+                ? "animate-pulse border-amber-400 bg-amber-50 ring-4 ring-amber-300"
+                : "border-sky-300 bg-sky-50"
+            }`}
           >
             <span className="text-5xl">{tray.emoji}</span>
             <span className="text-lg font-bold text-sky-700">{tray.label}</span>
@@ -181,11 +203,33 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
                     : { type: "spring", stiffness: 300, damping: 20 }
               }
               exit={{ opacity: 0, scale: 0.5 }}
-              className="flex cursor-grab select-none flex-col items-center gap-1 rounded-2xl bg-white px-5 py-4 shadow-xl active:cursor-grabbing"
+              className="relative flex cursor-grab select-none flex-col items-center gap-1 rounded-2xl bg-white px-5 py-4 shadow-xl active:cursor-grabbing"
               style={{ touchAction: "none", zIndex: dragId === item.id ? 50 : 1 }}
             >
+              <button
+                type="button"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  toggleHint(item.id);
+                }}
+                className={`absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full text-lg shadow transition ${
+                  hintedItemIds.has(item.id)
+                    ? "bg-amber-400 text-white"
+                    : "bg-amber-100 text-amber-600 hover:bg-amber-200"
+                }`}
+                aria-label={`Gợi ý cho ${item.label}`}
+                title="Xem gợi ý"
+              >
+                💡
+              </button>
               <span className="text-5xl">{item.emoji}</span>
               <span className="text-lg font-bold text-slate-700">{item.label}</span>
+              {hintedItemIds.has(item.id) && (
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
+                  → {trayById.get(item.correctTrayId)?.label}
+                </span>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
