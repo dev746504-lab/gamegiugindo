@@ -53,18 +53,18 @@ export default function HelpButton({ activeGame }: HelpButtonProps) {
 
   return (
     <>
-      <div className="flex items-center gap-1.5">
-        <motion.span
-          animate={{ x: [0, 4, 0] }}
-          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-          className="hidden items-center gap-1 text-sm font-bold text-slate-500 sm:flex"
+      <div className="fixed bottom-4 right-4 z-20 flex items-center gap-2">
+        <motion.div
+          animate={{ x: [0, 6, 0] }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+          className="flex items-center gap-1.5 rounded-full bg-indigo-500 px-4 py-2 text-base font-black text-white shadow-lg"
         >
-          Hướng dẫn <span className="text-lg">➜</span>
-        </motion.span>
+          Hướng dẫn <span className="text-xl">➜</span>
+        </motion.div>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-black text-indigo-600 shadow transition hover:bg-indigo-50"
+          className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white text-2xl font-black text-indigo-600 shadow-lg transition hover:bg-indigo-50"
           aria-label="Xem hướng dẫn trò chơi"
           title="Xem hướng dẫn trò chơi"
         >
