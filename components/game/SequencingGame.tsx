@@ -9,6 +9,7 @@ import { StepIllustration } from "@/components/game/BaoVoIllustrations";
 export interface SequencingStep {
   id: string;
   order: number;
+  short: string;
   text: string;
   icon: string;
   note?: string;
@@ -218,14 +219,14 @@ export default function SequencingGame({
   }
 
   return (
-    <div className="flex h-full flex-col gap-6">
+    <div className="flex h-full flex-col gap-3">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-4xl font-black text-slate-800">{data.title}</h2>
-          <p className="text-xl font-semibold text-slate-500">{data.instruction}</p>
+          <h2 className="text-3xl font-black text-slate-800">{data.title}</h2>
+          <p className="text-lg font-semibold text-slate-500">{data.instruction}</p>
         </div>
         <div
-          className={`rounded-3xl px-8 py-3 text-5xl font-black tabular-nums shadow-lg ${
+          className={`rounded-3xl px-6 py-2 text-4xl font-black tabular-nums shadow-lg ${
             remaining <= 10 ? "animate-pulse bg-rose-500 text-white" : "bg-white text-slate-800"
           }`}
         >
@@ -234,23 +235,23 @@ export default function SequencingGame({
       </div>
 
       {!activeTeamId && (
-        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
+        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-2 text-lg font-bold text-amber-700 shadow">
           👉 Hãy bấm chọn đội đang chơi ở bảng điểm góc trên bên phải trước khi sắp xếp nhé!
         </div>
       )}
 
       {activeTeamId && (
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
             onClick={onCheck}
             disabled={timeUp || lockedCount === order.length}
-            className="rounded-2xl bg-indigo-500 px-8 py-3 text-xl font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-2xl bg-indigo-500 px-6 py-2 text-lg font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
             🔍 Kiểm tra đáp án
           </button>
           <div
-            className={`rounded-2xl px-8 py-3 text-3xl font-black shadow-lg transition ${
+            className={`rounded-2xl px-6 py-2 text-2xl font-black shadow-lg transition ${
               lockedCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
             }`}
           >
@@ -261,7 +262,7 @@ export default function SequencingGame({
       )}
 
       <div
-        className={`grid flex-1 grid-cols-3 gap-4 transition ${
+        className={`grid flex-1 grid-cols-3 gap-3 transition ${
           !activeTeamId ? "pointer-events-none opacity-50" : ""
         }`}
       >
@@ -282,7 +283,7 @@ export default function SequencingGame({
                 onClick={() => handleCardClick(step.id)}
                 disabled={timeUp || isLocked}
                 title={step.text}
-                className={`relative flex h-full w-full flex-col items-center justify-center gap-2 rounded-3xl border-4 p-3 text-center shadow-xl transition disabled:cursor-not-allowed ${
+                className={`relative flex h-full w-full flex-col items-center justify-center gap-1 rounded-3xl border-4 p-2 text-center shadow-xl transition disabled:cursor-not-allowed ${
                   isLocked
                     ? "border-emerald-500 bg-emerald-50"
                     : flaggedWrong
@@ -298,11 +299,12 @@ export default function SequencingGame({
                 <motion.div
                   animate={flaggedWrong ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="flex w-full flex-col items-center gap-2"
+                  className="flex w-full flex-col items-center gap-1"
                 >
-                  <div className="h-28 w-28">
+                  <div className="h-20 w-20">
                     <StepIllustration stepId={step.id} />
                   </div>
+                  <span className="text-base font-bold text-slate-600">{step.short}</span>
                   {isHinted && !isLocked && (
                     <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
                       → Vị trí {step.order}
