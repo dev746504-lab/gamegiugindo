@@ -153,14 +153,14 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
   }
 
   return (
-    <div className="flex h-full flex-col gap-6">
+    <div className="flex h-full flex-col gap-3">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-4xl font-black text-slate-800">{data.title}</h2>
-          <p className="text-xl font-semibold text-slate-500">{data.instruction}</p>
+          <h2 className="text-3xl font-black text-slate-800">{data.title}</h2>
+          <p className="text-lg font-semibold text-slate-500">{data.instruction}</p>
         </div>
         <div
-          className={`rounded-3xl px-8 py-3 text-5xl font-black tabular-nums shadow-lg ${
+          className={`rounded-3xl px-6 py-2 text-4xl font-black tabular-nums shadow-lg ${
             remaining <= 10 ? "animate-pulse bg-rose-500 text-white" : "bg-white text-slate-800"
           }`}
         >
@@ -169,13 +169,13 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
       </div>
 
       {!activeTeamId && (
-        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-3 text-xl font-bold text-amber-700 shadow">
+        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-2 text-lg font-bold text-amber-700 shadow">
           👉 Hãy bấm chọn đội đang chơi ở bảng điểm góc trên bên phải trước khi kéo-thả nhé!
         </div>
       )}
 
       <div
-        className={`grid gap-4 transition ${
+        className={`grid gap-2 transition ${
           data.trays.length >= 5 ? "grid-cols-5" : data.trays.length === 3 ? "grid-cols-3" : "grid-cols-4"
         } ${!activeTeamId ? "pointer-events-none opacity-50" : ""}`}
       >
@@ -183,20 +183,20 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
           <div
             key={tray.id}
             data-tray-id={tray.id}
-            className={`flex min-h-[160px] flex-col items-center gap-2 rounded-3xl border-4 border-dashed p-3 transition ${
+            className={`flex min-h-[120px] flex-col items-center gap-1 rounded-3xl border-4 border-dashed p-2 transition ${
               hintedTrayIds.has(tray.id)
                 ? "animate-pulse border-amber-400 bg-amber-50 ring-4 ring-amber-300"
                 : "border-sky-300 bg-sky-50"
             }`}
           >
-            <span className="text-5xl">{tray.emoji}</span>
-            <span className="text-lg font-bold text-sky-700">{tray.label}</span>
+            <span className="text-4xl">{tray.emoji}</span>
+            <span className="text-base font-bold text-sky-700">{tray.label}</span>
             <div className="flex flex-wrap justify-center gap-1">
               {(placedByTray[tray.id] ?? []).map((itemId) => {
                 const item = data.items.find((i) => i.id === itemId);
                 if (!item) return null;
                 return (
-                  <span key={itemId} className="text-3xl" title={item.label}>
+                  <span key={itemId} className="text-2xl" title={item.label}>
                     {item.emoji}
                   </span>
                 );
@@ -207,7 +207,7 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
       </div>
 
       <div
-        className={`mt-auto flex min-h-[160px] flex-wrap items-center justify-center gap-6 rounded-3xl bg-white/70 p-6 transition ${
+        className={`mt-auto flex min-h-[130px] flex-wrap items-center justify-center gap-3 rounded-3xl bg-white/70 p-4 transition ${
           !activeTeamId ? "pointer-events-none opacity-50" : ""
         }`}
       >
@@ -233,7 +233,7 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
                     : { type: "spring", stiffness: 300, damping: 20 }
               }
               exit={{ opacity: 0, scale: 0.5 }}
-              className="relative flex cursor-grab select-none flex-col items-center gap-1 rounded-2xl bg-white px-5 py-4 shadow-xl active:cursor-grabbing"
+              className="relative flex cursor-grab select-none flex-col items-center gap-0.5 rounded-2xl bg-white px-3 py-2 shadow-xl active:cursor-grabbing"
               style={{ touchAction: "none", zIndex: dragId === item.id ? 50 : 1 }}
             >
               <button
@@ -243,7 +243,7 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
                   event.stopPropagation();
                   toggleHint(item.id);
                 }}
-                className={`absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full text-lg shadow transition ${
+                className={`absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full text-base shadow transition ${
                   hintedItemIds.has(item.id)
                     ? "bg-amber-400 text-white"
                     : "bg-amber-100 text-amber-600 hover:bg-amber-200"
@@ -253,10 +253,10 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
               >
                 💡
               </button>
-              <span className="text-5xl">{item.emoji}</span>
-              <span className="text-lg font-bold text-slate-700">{item.label}</span>
+              <span className="text-3xl">{item.emoji}</span>
+              <span className="text-sm font-bold text-slate-700">{item.label}</span>
               {hintedItemIds.has(item.id) && (
-                <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-700">
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">
                   → {trayById.get(item.correctTrayId)?.label}
                 </span>
               )}
@@ -264,7 +264,7 @@ export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlac
           ))}
         </AnimatePresence>
         {pendingItems.length === 0 && (
-          <p className="text-3xl font-black text-emerald-500">🎉 Hoàn thành rồi! 🎉</p>
+          <p className="text-2xl font-black text-emerald-500">🎉 Hoàn thành rồi! 🎉</p>
         )}
       </div>
     </div>

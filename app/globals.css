@@ -5,7 +5,7 @@
 /* Toàn bộ cỡ chữ Tailwind (text-sm, text-lg, text-xl...) đều tính theo rem,
    nên phóng to font-size gốc ở đây làm chữ to lên đồng loạt trên cả trang. */
 html {
-  font-size: 137.5%;
+  font-size: 150%;
 }
 
 :root {
