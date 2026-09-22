@@ -64,6 +64,7 @@ export default function PresentPage() {
               data={lessonData.sortingGame}
               sorting={state.sorting}
               activeTeamId={state.activeTeamId}
+              onCorrectPlacement={actions.awardPoint}
             />
           )}
           {state.activeGame === "truefalse" && (
@@ -82,6 +83,7 @@ export default function PresentPage() {
               sequencing={state.sequencing}
               activeTeamId={state.activeTeamId}
               onCheck={actions.checkSequencing}
+              onAllCorrect={actions.awardPoint}
             />
           )}
         </div>

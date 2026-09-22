@@ -26,6 +26,20 @@ export function createGameActions(update: Updater) {
       update((prev) => ({ ...prev, teams: prev.teams.map((team) => ({ ...team, score: 0 })) }));
     },
 
+    // Award the currently active team a point automatically (used when a
+    // game detects a correct answer on its own, e.g. a correct drag-drop or
+    // a fully correct sequencing check). No-op if no team is selected.
+    awardPoint(delta: number = 1) {
+      update((prev) => ({
+        ...prev,
+        teams: prev.activeTeamId
+          ? prev.teams.map((team) =>
+              team.id === prev.activeTeamId ? { ...team, score: Math.max(0, team.score + delta) } : team
+            )
+          : prev.teams,
+      }));
+    },
+
     startTimer() {
       update((prev) => ({
         ...prev,

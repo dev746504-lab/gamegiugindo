@@ -30,6 +30,7 @@ interface SortingGameProps {
   data: SortingGameData;
   sorting: SortingState;
   activeTeamId: string | null;
+  onCorrectPlacement: () => void;
 }
 
 function shuffleItems<T>(items: T[]): T[] {
@@ -41,7 +42,7 @@ function shuffleItems<T>(items: T[]): T[] {
   return arr;
 }
 
-export default function SortingGame({ data, sorting, activeTeamId }: SortingGameProps) {
+export default function SortingGame({ data, sorting, activeTeamId, onCorrectPlacement }: SortingGameProps) {
   const [placedByTray, setPlacedByTray] = useState<Record<string, string[]>>({});
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -141,6 +142,7 @@ export default function SortingGame({ data, sorting, activeTeamId }: SortingGame
         [trayId]: [...(prev[trayId] ?? []), item.id],
       }));
       playSound("correct");
+      onCorrectPlacement();
     } else if (trayId) {
       setShakeId(item.id);
       playSound("wrong");

@@ -25,6 +25,7 @@ interface SequencingGameProps {
   sequencing: SequencingState;
   activeTeamId: string | null;
   onCheck: () => void;
+  onAllCorrect: () => void;
 }
 
 /** Fisher-Yates shuffle, retried until at most 1 originally-adjacent pair
@@ -52,7 +53,13 @@ function shuffleSteps(steps: SequencingStep[]): SequencingStep[] {
   return fallback;
 }
 
-export default function SequencingGame({ data, sequencing, activeTeamId, onCheck }: SequencingGameProps) {
+export default function SequencingGame({
+  data,
+  sequencing,
+  activeTeamId,
+  onCheck,
+  onAllCorrect,
+}: SequencingGameProps) {
   const [order, setOrder] = useState<SequencingStep[]>(() => shuffleSteps(data.steps));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [checkResult, setCheckResult] = useState<Record<string, boolean> | null>(null);
@@ -64,6 +71,7 @@ export default function SequencingGame({ data, sequencing, activeTeamId, onCheck
   const isFirstRoundRef = useRef(true);
   const lastCheckSignalRef = useRef(sequencing.checkSignal);
   const lastShowAnswerSignalRef = useRef(sequencing.showAnswerSignal);
+  const awardedThisRoundRef = useRef(false);
   const timersRef = useRef<{ interval?: ReturnType<typeof setInterval>; timeout?: ReturnType<typeof setTimeout> }>(
     {}
   );
@@ -81,6 +89,7 @@ export default function SequencingGame({ data, sequencing, activeTeamId, onCheck
     setShowAnswer(false);
     setRevealCount(0);
     setHintedStepIds(new Set());
+    awardedThisRoundRef.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequencing.roundId]);
 
@@ -103,7 +112,12 @@ export default function SequencingGame({ data, sequencing, activeTeamId, onCheck
     });
     setCheckResult(result);
     const correctCount = Object.values(result).filter(Boolean).length;
-    playSound(correctCount === order.length ? "correct" : "wrong");
+    const allCorrect = correctCount === order.length;
+    playSound(allCorrect ? "correct" : "wrong");
+    if (allCorrect && !awardedThisRoundRef.current) {
+      awardedThisRoundRef.current = true;
+      onAllCorrect();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequencing.checkSignal]);
 
