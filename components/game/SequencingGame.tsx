@@ -25,9 +25,7 @@ export interface SequencingGameData {
 interface SequencingGameProps {
   data: SequencingGameData;
   sequencing: SequencingState;
-  activeTeamId: string | null;
   onCheck: () => void;
-  onCorrectPlacement: () => void;
 }
 
 /** Fisher-Yates shuffle, retried until at most 1 originally-adjacent pair
@@ -55,13 +53,7 @@ function shuffleSteps(steps: SequencingStep[]): SequencingStep[] {
   return fallback;
 }
 
-export default function SequencingGame({
-  data,
-  sequencing,
-  activeTeamId,
-  onCheck,
-  onCorrectPlacement,
-}: SequencingGameProps) {
+export default function SequencingGame({ data, sequencing, onCheck }: SequencingGameProps) {
   const [order, setOrder] = useState<SequencingStep[]>(() => shuffleSteps(data.steps));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [checkResult, setCheckResult] = useState<Record<string, boolean> | null>(null);
@@ -121,7 +113,6 @@ export default function SequencingGame({
       return next;
     });
     playSound("correct");
-    newlyCorrect.forEach(() => onCorrectPlacement());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order]);
 
@@ -177,7 +168,7 @@ export default function SequencingGame({
   const sortedSteps = [...data.steps].sort((a, b) => a.order - b.order);
 
   function handleCardClick(stepId: string) {
-    if (timeUp || !activeTeamId || lockedIds.has(stepId)) return;
+    if (timeUp || lockedIds.has(stepId)) return;
     if (selectedId === null) {
       setSelectedId(stepId);
       return;
@@ -234,38 +225,26 @@ export default function SequencingGame({
         </div>
       </div>
 
-      {!activeTeamId && (
-        <div className="flex items-center justify-center gap-3 rounded-2xl bg-amber-100 px-6 py-2 text-lg font-bold text-amber-700 shadow">
-          👉 Hãy bấm chọn đội đang chơi ở bảng điểm góc trên bên phải trước khi sắp xếp nhé!
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          onClick={onCheck}
+          disabled={timeUp || lockedCount === order.length}
+          className="rounded-2xl bg-indigo-500 px-6 py-2 text-lg font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          🔍 Kiểm tra đáp án
+        </button>
+        <div
+          className={`rounded-2xl px-6 py-2 text-2xl font-black shadow-lg transition ${
+            lockedCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
+          }`}
+        >
+          {lockedCount === order.length ? "🎉 " : ""}
+          {lockedCount}/{order.length} bước đúng!
         </div>
-      )}
+      </div>
 
-      {activeTeamId && (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={onCheck}
-            disabled={timeUp || lockedCount === order.length}
-            className="rounded-2xl bg-indigo-500 px-6 py-2 text-lg font-bold text-white shadow-lg transition hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            🔍 Kiểm tra đáp án
-          </button>
-          <div
-            className={`rounded-2xl px-6 py-2 text-2xl font-black shadow-lg transition ${
-              lockedCount === order.length ? "bg-emerald-500 text-white" : "bg-amber-100 text-amber-700"
-            }`}
-          >
-            {lockedCount === order.length ? "🎉 " : ""}
-            {lockedCount}/{order.length} bước đúng!
-          </div>
-        </div>
-      )}
-
-      <div
-        className={`grid flex-1 grid-cols-3 gap-2 transition ${
-          !activeTeamId ? "pointer-events-none opacity-50" : ""
-        }`}
-      >
+      <div className="grid flex-1 grid-cols-3 gap-2">
         {order.map((step, index) => {
           const isSelected = selectedId === step.id;
           const isLocked = lockedIds.has(step.id);

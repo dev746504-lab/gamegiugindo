@@ -4,12 +4,6 @@ import { useCallback, useState } from "react";
 
 export type ActiveGame = "sorting" | "truefalse" | "sequencing";
 
-export interface Team {
-  id: string;
-  name: string;
-  score: number;
-}
-
 /** Shared shape for any game's countdown clock. */
 export interface CountdownTimer {
   timerDuration: number;
@@ -26,7 +20,6 @@ export interface TrueFalseState {
   currentIndex: number;
   teacherPick: boolean | null;
   revealed: boolean;
-  wrongAttempt: boolean;
 }
 
 export interface SequencingState extends CountdownTimer {
@@ -40,22 +33,14 @@ export interface SequencingState extends CountdownTimer {
 
 export interface GameState {
   activeGame: ActiveGame;
-  activeTeamId: string | null;
-  teams: Team[];
   sorting: SortingState;
   trueFalse: TrueFalseState;
   sequencing: SequencingState;
 }
 
-export function createInitialState(teamNames: string[]): GameState {
+export function createInitialState(): GameState {
   return {
     activeGame: "sorting",
-    activeTeamId: null,
-    teams: teamNames.map((name, index) => ({
-      id: `team-${index + 1}`,
-      name,
-      score: 0,
-    })),
     sorting: {
       timerDuration: 600,
       remainingSeconds: 600,
@@ -67,7 +52,6 @@ export function createInitialState(teamNames: string[]): GameState {
       currentIndex: 0,
       teacherPick: null,
       revealed: false,
-      wrongAttempt: false,
     },
     sequencing: {
       timerDuration: 120,
@@ -90,8 +74,8 @@ export function getRemainingSeconds(timer: CountdownTimer, now = Date.now()): nu
 }
 
 /** One screen, one browser tab: game state just lives in React state. */
-export function useGameState(teamNames: string[]) {
-  const [state, setState] = useState<GameState>(() => createInitialState(teamNames));
+export function useGameState() {
+  const [state, setState] = useState<GameState>(() => createInitialState());
 
   const update = useCallback((updater: (prev: GameState) => GameState) => {
     setState(updater);

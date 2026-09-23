@@ -18,7 +18,7 @@ export default function Home() {
 
       <p className="max-w-lg text-sm text-slate-500">
         Chiếu màn hình này lên tivi/máy chiếu. Bấm nút ⚙️ ở góc dưới-trái bất cứ lúc nào để mở bảng điều
-        khiển: chuyển game, chấm điểm, bật/dừng giờ...
+        khiển: chuyển game, bật/dừng giờ...
       </p>
     </main>
   );

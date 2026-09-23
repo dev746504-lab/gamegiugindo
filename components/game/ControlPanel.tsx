@@ -5,7 +5,6 @@ import lessonData from "@/data/classroom-game/giu-gin-do-dung.json";
 import baoVoData from "@/data/classroom-game/bao-vo-than-toc.json";
 import { getRemainingSeconds, type GameState } from "@/lib/game/state";
 import type { GameActions } from "@/lib/game/actions";
-import ScoreBoard from "@/components/game/ScoreBoard";
 
 interface ControlPanelProps {
   state: GameState;
@@ -126,52 +125,36 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
                 Sau →
               </button>
             </div>
-            {state.trueFalse.wrongAttempt ? (
-              <div className="space-y-2 rounded-xl bg-rose-50 p-3">
-                <p className="text-sm font-bold text-rose-600">❌ Sai rồi! Mời đội khác trả lời.</p>
-                <button
-                  type="button"
-                  onClick={actions.passToNextTeam}
-                  className="rounded-xl bg-rose-500 px-4 py-2 text-sm font-bold text-white"
-                >
-                  Chọn đội khác trả lời →
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => actions.pickAnswer(true)}
-                  disabled={state.trueFalse.revealed || !state.activeTeamId}
-                  className={`rounded-xl px-4 py-2 text-sm font-bold text-white disabled:opacity-40 ${
-                    state.trueFalse.teacherPick === true ? "bg-emerald-600" : "bg-emerald-400"
-                  }`}
-                >
-                  ĐÚNG
-                </button>
-                <button
-                  type="button"
-                  onClick={() => actions.pickAnswer(false)}
-                  disabled={state.trueFalse.revealed || !state.activeTeamId}
-                  className={`rounded-xl px-4 py-2 text-sm font-bold text-white disabled:opacity-40 ${
-                    state.trueFalse.teacherPick === false ? "bg-rose-600" : "bg-rose-400"
-                  }`}
-                >
-                  SAI
-                </button>
-                <button
-                  type="button"
-                  onClick={actions.revealAnswer}
-                  disabled={state.trueFalse.teacherPick === null || state.trueFalse.revealed}
-                  className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
-                >
-                  Chốt đáp án
-                </button>
-              </div>
-            )}
-            {!state.activeTeamId && !state.trueFalse.wrongAttempt && (
-              <p className="text-xs font-bold text-amber-600">👉 Chọn đội đang trả lời ở Bảng điểm bên dưới trước.</p>
-            )}
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => actions.pickAnswer(true)}
+                disabled={state.trueFalse.revealed}
+                className={`rounded-xl px-4 py-2 text-sm font-bold text-white disabled:opacity-40 ${
+                  state.trueFalse.teacherPick === true ? "bg-emerald-600" : "bg-emerald-400"
+                }`}
+              >
+                ĐÚNG
+              </button>
+              <button
+                type="button"
+                onClick={() => actions.pickAnswer(false)}
+                disabled={state.trueFalse.revealed}
+                className={`rounded-xl px-4 py-2 text-sm font-bold text-white disabled:opacity-40 ${
+                  state.trueFalse.teacherPick === false ? "bg-rose-600" : "bg-rose-400"
+                }`}
+              >
+                SAI
+              </button>
+              <button
+                type="button"
+                onClick={actions.revealAnswer}
+                disabled={state.trueFalse.teacherPick === null || state.trueFalse.revealed}
+                className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
+              >
+                Chốt đáp án
+              </button>
+            </div>
           </>
         )}
 
@@ -192,8 +175,7 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
               <button
                 type="button"
                 onClick={actions.checkSequencing}
-                disabled={!state.activeTeamId}
-                className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40"
+                className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-bold text-white"
               >
                 Kiểm tra kết quả
               </button>
@@ -205,31 +187,8 @@ export default function ControlPanel({ state, actions }: ControlPanelProps) {
                 Xem đáp án đúng
               </button>
             </div>
-            {!state.activeTeamId && (
-              <p className="text-xs font-bold text-amber-600">👉 Chọn đội đang thi ở Bảng điểm bên dưới trước.</p>
-            )}
           </>
         )}
-      </div>
-
-      <div className="space-y-2 rounded-2xl bg-slate-50 p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-600">Bảng điểm</h3>
-          <button
-            type="button"
-            onClick={actions.resetScores}
-            className="rounded-lg bg-slate-200 px-3 py-1 text-xs font-bold text-slate-600"
-          >
-            Đặt lại điểm
-          </button>
-        </div>
-        <ScoreBoard
-          teams={state.teams}
-          activeTeamId={state.activeTeamId}
-          variant="control"
-          onSelectTeam={actions.selectTeam}
-          onAddScore={actions.addScore}
-        />
       </div>
     </div>
   );

@@ -9,37 +9,6 @@ export function createGameActions(update: Updater) {
       update((prev) => ({ ...prev, activeGame: game }));
     },
 
-    selectTeam(teamId: string) {
-      update((prev) => ({ ...prev, activeTeamId: teamId }));
-    },
-
-    addScore(teamId: string, delta: number) {
-      update((prev) => ({
-        ...prev,
-        teams: prev.teams.map((team) =>
-          team.id === teamId ? { ...team, score: Math.max(0, team.score + delta) } : team
-        ),
-      }));
-    },
-
-    resetScores() {
-      update((prev) => ({ ...prev, teams: prev.teams.map((team) => ({ ...team, score: 0 })) }));
-    },
-
-    // Award the currently active team a point automatically (used when a
-    // game detects a correct answer on its own, e.g. a correct drag-drop or
-    // a fully correct sequencing check). No-op if no team is selected.
-    awardPoint(delta: number = 1) {
-      update((prev) => ({
-        ...prev,
-        teams: prev.activeTeamId
-          ? prev.teams.map((team) =>
-              team.id === prev.activeTeamId ? { ...team, score: Math.max(0, team.score + delta) } : team
-            )
-          : prev.teams,
-      }));
-    },
-
     startTimer() {
       update((prev) => ({
         ...prev,
@@ -80,7 +49,7 @@ export function createGameActions(update: Updater) {
         );
         return {
           ...prev,
-          trueFalse: { currentIndex: nextIndex, teacherPick: null, revealed: false, wrongAttempt: false },
+          trueFalse: { currentIndex: nextIndex, teacherPick: null, revealed: false },
         };
       });
     },
@@ -92,42 +61,11 @@ export function createGameActions(update: Updater) {
       }));
     },
 
-    // Correct: award the active team exactly 1 point and reveal the explanation.
-    // Wrong: don't reveal anything yet — just flag it so the UI can offer the
-    // question to a different team instead of spoiling the answer.
+    // Reveal the correct answer + explanation, whether the pick was right or
+    // wrong — the UI decides how to show that based on comparing teacherPick
+    // to the question's actual answer.
     revealAnswer() {
-      update((prev) => {
-        const question = lessonData.trueFalseGame.questions[prev.trueFalse.currentIndex];
-        if (!question || prev.trueFalse.teacherPick === null) return prev;
-        const isCorrect = prev.trueFalse.teacherPick === question.answer;
-
-        if (isCorrect) {
-          return {
-            ...prev,
-            teams: prev.activeTeamId
-              ? prev.teams.map((team) =>
-                  team.id === prev.activeTeamId ? { ...team, score: team.score + 1 } : team
-                )
-              : prev.teams,
-            trueFalse: { ...prev.trueFalse, revealed: true, wrongAttempt: false },
-          };
-        }
-
-        return {
-          ...prev,
-          trueFalse: { ...prev.trueFalse, wrongAttempt: true },
-        };
-      });
-    },
-
-    // After a wrong attempt: clear the pick and the active team so the
-    // teacher has to choose a different team to try the same question.
-    passToNextTeam() {
-      update((prev) => ({
-        ...prev,
-        activeTeamId: null,
-        trueFalse: { ...prev.trueFalse, teacherPick: null, wrongAttempt: false },
-      }));
+      update((prev) => ({ ...prev, trueFalse: { ...prev.trueFalse, revealed: true } }));
     },
 
     // Bumping roundId tells SequencingGame to reshuffle and clear any prior

@@ -13,9 +13,8 @@ const INSTRUCTIONS: Record<ActiveGame, GameInstructions> = {
   sorting: {
     title: "🧩 Game 1: Sắp xếp đồ dùng học tập",
     steps: [
-      "Bấm chọn đội đang chơi ở bảng điểm góc trên bên phải.",
       "Kéo từng thẻ đồ dùng ở khay chờ bên dưới vào đúng khay cất giữ phía trên.",
-      "Kéo đúng: thẻ biến mất khỏi khay chờ và đội được cộng ngay 1 điểm. Kéo sai: thẻ rung nhẹ rồi bật về chỗ cũ.",
+      "Kéo đúng: thẻ biến mất khỏi khay chờ, có hiệu ứng vui. Kéo sai: thẻ rung nhẹ rồi bật về chỗ cũ.",
       "Bấm biểu tượng 💡 trên mỗi thẻ nếu cần xem gợi ý nên bỏ vào khay nào.",
       "Mở bảng điều khiển ⚙️ để bấm Bắt đầu / Dừng / Chơi lại cho đồng hồ đếm giờ.",
     ],
@@ -23,20 +22,17 @@ const INSTRUCTIONS: Record<ActiveGame, GameInstructions> = {
   truefalse: {
     title: "❓ Game 2: Đúng hay Sai",
     steps: [
-      "Bấm chọn đội đang trả lời ở bảng điểm góc trên bên phải.",
-      "Đọc to câu hỏi trên màn hình, cho học sinh trả lời rồi bấm nút ĐÚNG hoặc SAI thay cho đội.",
-      "Bấm \"Chốt đáp án\": nếu đúng, đội được cộng ngay 1 điểm và màn hình hiện lời giải thích.",
-      "Nếu sai, đáp án sẽ không bị lộ — bấm \"Chọn đội khác trả lời\" để mời đội khác thử lại đúng câu đó.",
+      "Đọc to câu hỏi trên màn hình, cho học sinh trả lời rồi bấm nút ĐÚNG hoặc SAI.",
+      "Bấm \"Chốt đáp án\" để xem kết quả: màn hình hiện đáp án đúng kèm lời giải thích.",
       "Mở bảng điều khiển ⚙️ để chuyển sang câu trước/sau (có 7 câu tất cả).",
     ],
   },
   sequencing: {
     title: "📚 Game 3: Bao vở thần tốc",
     steps: [
-      "Bấm chọn đội đang thi ở bảng điểm góc trên bên phải.",
       "Mở bảng điều khiển ⚙️ → bấm \"Bắt đầu vòng chơi\" để xáo 6 bước và chạy đồng hồ đếm giờ.",
       "Bấm 2 thẻ bất kỳ để hoán đổi vị trí cho nhau, sắp xếp sao cho đúng thứ tự 1 → 6.",
-      "Thẻ vào đúng chỗ sẽ tự khoá lại (hiện dấu ✅ xanh) và được cộng điểm ngay lập tức, không cần chờ kiểm tra.",
+      "Thẻ vào đúng chỗ sẽ tự khoá lại (hiện dấu ✅ xanh) ngay lập tức, không cần chờ kiểm tra.",
       "Bấm \"🔍 Kiểm tra đáp án\" để xem thẻ nào còn sai (rung, viền đỏ). Bấm 💡 trên thẻ để xem gợi ý vị trí đúng.",
       "Bấm \"Xem đáp án đúng\" trong bảng điều khiển để trình chiếu lại đúng thứ tự kèm giải thích, giúp cả lớp ghi nhớ trước khi thực hành.",
     ],
