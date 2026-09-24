@@ -7,10 +7,10 @@
     "timerSeconds": 600,
     "trays": [
       { "id": "tray-ke-sach", "label": "Kệ sách", "emoji": "📚" },
-      { "id": "tray-hop-but", "label": "Hộp bút", "emoji": "✏️" },
+      { "id": "tray-hop-but", "label": "Hộp bút", "emoji": "🧰" },
       { "id": "tray-hop-mau", "label": "Hộp màu", "emoji": "🎨" },
       { "id": "tray-bia-ho-so", "label": "Bìa hồ sơ", "emoji": "📁" },
-      { "id": "tray-cap-sach", "label": "Cặp sách", "emoji": "🎒" }
+      { "id": "tray-tui-bang-con", "label": "Túi đựng bảng con", "emoji": "👝" }
     ],
     "items": [
       { "id": "item-sach", "label": "Sách", "emoji": "📖", "correctTrayId": "tray-ke-sach" },
@@ -23,15 +23,15 @@
 
       { "id": "item-but-mau", "label": "Bút màu", "emoji": "🖍️", "correctTrayId": "tray-hop-mau" },
       { "id": "item-but-long", "label": "Bút lông", "emoji": "🖌️", "correctTrayId": "tray-hop-mau" },
-      { "id": "item-hop-sap-mau", "label": "Hộp sáp màu", "emoji": "🎨", "correctTrayId": "tray-hop-mau" },
+      { "id": "item-but-sap-mau", "label": "Bút sáp màu", "emoji": "🌈", "correctTrayId": "tray-hop-mau" },
 
       { "id": "item-bai-kiem-tra", "label": "Bài kiểm tra", "emoji": "📝", "correctTrayId": "tray-bia-ho-so" },
       { "id": "item-phieu-bai-tap", "label": "Phiếu bài tập", "emoji": "📄", "correctTrayId": "tray-bia-ho-so" },
-      { "id": "item-giay-kiem-tra", "label": "Giấy kiểm tra", "emoji": "🗒️", "correctTrayId": "tray-bia-ho-so" },
+      { "id": "item-giay-khen", "label": "Giấy khen", "emoji": "📜", "correctTrayId": "tray-bia-ho-so" },
 
-      { "id": "item-bang-con", "label": "Bảng con", "emoji": "🔲", "correctTrayId": "tray-cap-sach" },
-      { "id": "item-but-long-bang", "label": "Bút lông bảng", "emoji": "🖋️", "correctTrayId": "tray-cap-sach" },
-      { "id": "item-khan-lau-bang", "label": "Khăn lau bảng", "emoji": "🧽", "correctTrayId": "tray-cap-sach" }
+      { "id": "item-bang-con", "label": "Bảng con", "emoji": "🔲", "correctTrayId": "tray-tui-bang-con" },
+      { "id": "item-but-long-bang", "label": "Bút lông bảng", "emoji": "🖋️", "correctTrayId": "tray-tui-bang-con" },
+      { "id": "item-khan-lau-bang", "label": "Khăn lau bảng", "emoji": "🧽", "correctTrayId": "tray-tui-bang-con" }
     ]
   },
   "trueFalseGame": {
